@@ -14,3 +14,4 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('youtube/channels/{id}/titles', 'YoutubeController@getListByChannelId');
+Route::get('youtube/channels/{id}/titles/{page_token?}', 'YoutubeController@getListByChannelId') ->name('list');
