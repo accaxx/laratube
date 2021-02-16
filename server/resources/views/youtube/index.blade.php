@@ -20,29 +20,16 @@
             </div>
         </div>
         <div class="content">
-            <div class="content__body">
-                @foreach ($snippets as $snippet)
-                    <div class="content__body__videos">
-                        <p>
-                            {{ $snippet->title }}
-                        </p>
-                    </div>
+            <form action="youtube/channels" method = "POST">
+                @csrf
+                <select name="channel_list">
+                <option value='' disabled selected style='display:none;'>チャンネル名を選択してください</option>
+                @foreach ($channels as $channel)
+                    <option value="{{ $channel -> youtube_channel_id}}">{{ $channel -> name}}</option>
                 @endforeach
-            </div>
-        </div>
-        <div class="hooter">
-            <div class="hooter_bar">
-            @if (isset($prev_page_token))
-                <a href ="{{ route('list',['id' => $channelId,'page_token' => $prev_page_token]) }}"><p class="hooter_pre"> 前へ </p></a>
-            @else
-                <p class="hooter_pre"> 前へ </p>
-            @endif
-            @if (isset($next_page_token))
-                <a href ="{{ route('list',['id' => $channelId,'page_token' => $next_page_token]) }}"><p class="hooter_next"> 次へ </p></a>
-            @else
-                <p class="hooter_next"> 次へ </p>
-            @endif
-            </div>
+                </select>
+                <input type="submit" name="submit" value="検索"/>
+            </form>
         </div>
     </div>
 </body>
