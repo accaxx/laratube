@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\ChannelRequest;
 use App\Channel;
 use Google_Client;
 use Google_Service_YouTube;
@@ -15,14 +15,12 @@ class YoutubeController extends Controller
 
     public function index(Channel $channel)
     {
-        // return $channel -> get();
-        return view('youtube/index') -> with(['channels' => $channel -> get()]);
+        return view('youtube/index')->with(['channels' => $channel->get()]);
     }
 
-    public function processForm(Request $request)
+    public function processForm(Channel $channel,ChannelRequest $request)
     {
-        $channelId = $request -> channel_list;
-        return redirect('youtube/channels/'.$channelId .'/titles');    
+        return redirect('youtube/channels/'.Channel::select('youtube_channel_id')->find((int)$request->table_id)->youtube_channel_id.'/titles');    
     }
 
     public function getListByChannelId(String $channelId,string $pageToken ='')

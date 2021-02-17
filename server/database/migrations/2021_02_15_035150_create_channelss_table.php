@@ -18,7 +18,8 @@ class CreateChannelssTable extends Migration
             $table->string('name', 255)->comment('チャンネル名');
             $table->string('youtube_channel_id', 255)->comment('YoutubeのチャンネルID');
             $table->timestamps();
-            $table->softDeletes();        });
+            $table->softDeletes();
+        });
     }
 
     /**

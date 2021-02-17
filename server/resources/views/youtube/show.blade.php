@@ -12,12 +12,11 @@
         <div class="header">
             <div class="header__title">
                 <h1 class="header__title__main">
-                    {{ $snippets[0] -> channelTitle }};
+                    {{ $snippets[0]->channelTitle }}
                 </h1>
                 <p class="header__title__sub">
                     This is Youtube Title GET;
                 </p>
-                <a href ="/"><p class="back">選択画面に戻る</p></a>
             </div>
         </div>
         <div class="content">
