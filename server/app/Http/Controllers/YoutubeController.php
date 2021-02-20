@@ -20,10 +20,10 @@ class YoutubeController extends Controller
 
     public function processForm(Channel $channel,ChannelRequest $request)
     {
-        return redirect('youtube/channels/'.Channel::select('youtube_channel_id')->find((int)$request->table_id)->youtube_channel_id.'/titles');    
+        return redirect('youtube/channels/'.$channel->find($request->table_id)->youtube_channel_id.'/titles');    
     }
 
-    public function getListByChannelId(String $channelId,string $pageToken ='')
+    public function getListByChannelId(string $channelId,string $pageToken ='')
     {
         // Googleへの接続情報のインスタンスを作成と設定
         $client = new Google_Client();
@@ -41,7 +41,9 @@ class YoutubeController extends Controller
         $next_page_token = $items['nextPageToken'];
         $prev_page_token = $items['prevPageToken'];
         $snippets = collect($items->getItems())->pluck('snippet')->all();
-        return view('youtube/show')->with(['snippets' => $snippets,'channelId' => $channelId, 'next_page_token' => $next_page_token,'prev_page_token' => $prev_page_token]);
+        // チャンネルタイトルの取得
+        $channelTitle = Channel::where('youtube_channel_id',$channelId)->first()->name;
+        return view('youtube/show')->with(['snippets' => $snippets,'channelId' => $channelId, 'next_page_token' => $next_page_token,'prev_page_token' => $prev_page_token,'channelTitle' => $channelTitle]);
     }
 }
 

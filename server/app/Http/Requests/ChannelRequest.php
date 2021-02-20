@@ -8,10 +8,6 @@ class ChannelRequest extends FormRequest
 {
     public function rules()
     {
-        $data = $this->all();
-        if (isset($data['table_id'])){
-            $data['table_id'] = (int)$data['table_id'];
-        }
         return [
             'table_id' => 'required|integer|exists:channels,id',
         ];
@@ -23,5 +19,13 @@ class ChannelRequest extends FormRequest
             'table_id.required' => 'チャンネル名を選択してください。',
             'table_id.exists'   => '選択肢から選んでください。',
         ];
+    }
+
+    public function getValidatorInstance()
+    {
+        $data = $this->all();
+        $data['table_id'] = (int)$data['table_id'];
+        $this->getInputSource()->replace($data);
+        return parent::getValidatorInstance();
     }
 }
