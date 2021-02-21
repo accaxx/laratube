@@ -14,5 +14,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/','YoutubeController@index');
-Route::post('/youtube/channels','YoutubeController@processForm');
-Route::get('youtube/channels/{id}/titles/{page_token?}', 'YoutubeController@getListByChannelId')->name('list');
+Route::post('/youtube/channels','YoutubeController@searchList');
+Route::get('/youtube/{channel}/titles/{page_token?}','YoutubeController@getListByChannelIdAndToken')->name('list');
