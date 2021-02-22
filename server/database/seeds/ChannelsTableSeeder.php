@@ -67,6 +67,5 @@ class ChannelsTableSeeder extends Seeder
                 "created_at" => now(),
             ],
         ]);
-        //
     }
 }
