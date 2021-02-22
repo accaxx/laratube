@@ -20,12 +20,4 @@ class ChannelRequest extends FormRequest
             'table_id.exists'   => '選択肢から選んでください。',
         ];
     }
-
-    public function getValidatorInstance()
-    {
-        $data = $this->all();
-        $data['table_id'] = (int)$data['table_id'];
-        $this->getInputSource()->replace($data);
-        return parent::getValidatorInstance();
-    }
 }

@@ -12,7 +12,7 @@
         <div class="header">
             <div class="header__title">
                 <h1 class="header__title__main">
-                    {{ $channelTitle }}
+                    {{ $target_channel->name }}
                 </h1>
                 <p class="header__title__sub">
                     This is Youtube Title GET;
@@ -21,10 +21,10 @@
         </div>
         <div class="content">
             <div class="content__body">
-                @foreach ($snippets as $snippet)
+                @foreach ($result->items as $item)
                     <div class="content__body__videos">
                         <p>
-                            {{ $snippet->title }}
+                            {{ $item->snippet->title }}
                         </p>
                     </div>
                 @endforeach
@@ -32,13 +32,13 @@
         </div>
         <div class="hooter">
             <div class="hooter_bar">
-            @if (isset($prev_page_token))
-                <a href ="{{ route('list',['id' => $channelId,'page_token' => $prev_page_token]) }}"><p class="hooter_pre"> 前へ </p></a>
+            @if (isset($result->prevPageToken))
+                <a href ="{{ route('list',['channel' => $target_channel->id,'page_token' => $result->prevPageToken]) }}"><p class="hooter_pre"> 前へ </p></a>
             @else
                 <p class="hooter_pre"> 前へ </p>
             @endif
-            @if (isset($next_page_token))
-                <a href ="{{ route('list',['id' => $channelId,'page_token' => $next_page_token]) }}"><p class="hooter_next"> 次へ </p></a>
+            @if (isset($result->nextPageToken))
+                <a href ="{{ route('list',['channel' => $target_channel,'page_token' => $result->nextPageToken]) }}"><p class="hooter_next"> 次へ </p></a>
             @else
                 <p class="hooter_next"> 次へ </p>
             @endif

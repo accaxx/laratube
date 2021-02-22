@@ -18,32 +18,30 @@ class YoutubeController extends Controller
         return view('youtube/index')->with(['channels' => $channel->get()]);
     }
 
-    public function processForm(Channel $channel,ChannelRequest $request)
+    public function searchList(Channel $channel, ChannelRequest $request)
     {
-        return redirect('youtube/channels/'.$channel->find($request->table_id)->youtube_channel_id.'/titles');    
+        $target_channel = $channel->find($request->table_id);
+        $result = $this->getListFromYoutubeAPI($target_channel->youtube_channel_id);
+        return view('youtube/show')->with(['target_channel' => $target_channel, 'result' => $result]);
     }
 
-    public function getListByChannelId(string $channelId,string $pageToken ='')
+    public function getListByChannelIdAndToken(Channel $channel, string $page_token = '')
     {
-        // Googleへの接続情報のインスタンスを作成と設定
+        $result = $this->getListFromYoutubeAPI($channel->youtube_channel_id, $page_token);
+        return view('youtube/show')->with(['target_channel' => $channel, 'result' => $result]);
+    }
+
+    private function getListFromYoutubeAPI(string $channel_id, string $page_token ='')
+    {
         $client = new Google_Client();
         $client->setDeveloperKey(env('GOOGLE_API_KEY'));
-        // 接続情報のインスタンスを用いてYoutubeのデータへアクセス可能なインスタンスを生成
         $youtube = new Google_Service_YouTube($client);
-        // 必要情報を引数に持たせ、listSearchで検索して動画一覧を取得
-        $items = $youtube->search->listSearch('snippet', [
-            'channelId'     => $channelId,
+        return $youtube->search->listSearch('snippet', [
+            'channelId'     => $channel_id,
             'order'         => self::DEFAULT_ORDER_TYPE,
             'maxResults'    => self::MAX_SNIPPETS_COUNT,
-            'pageToken'     => $pageToken,
+            'pageToken'     => $page_token,
         ]);
-        // 連想配列だと扱いづらいのでcollection化して処理
-        $next_page_token = $items['nextPageToken'];
-        $prev_page_token = $items['prevPageToken'];
-        $snippets = collect($items->getItems())->pluck('snippet')->all();
-        // チャンネルタイトルの取得
-        $channelTitle = Channel::where('youtube_channel_id',$channelId)->first()->name;
-        return view('youtube/show')->with(['snippets' => $snippets,'channelId' => $channelId, 'next_page_token' => $next_page_token,'prev_page_token' => $prev_page_token,'channelTitle' => $channelTitle]);
     }
 }
 
