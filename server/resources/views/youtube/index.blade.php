@@ -21,13 +21,13 @@
         </div>
         <div class="content">
             <p class="body__error" style="color:red">{{ $errors->first('table_id') }}</p>
-            <form action="youtube/channels" method = "POST">
-                @csrf
+            <form action="{{ action('YoutubeController@searchList') }}" method = "GET">
                 <select name="table_id">
                     <option value='' disabled selected style='display:none;'>チャンネル名を選択してください</option>
                     @foreach ($channels as $channel)
                     <option value="{{ $channel->id }}">{{ $channel->name }}</option>
                     @endforeach
+                    <option value="12">12</option>                    
                 </select>
                 <input type="submit" name="submit" value="検索"/>
             </form>

@@ -15,7 +15,18 @@
                     {{ $target_channel->name }}
                 </h1>
                 <p class="header__title__sub">
-                    This is Youtube Title GET;
+                    Here is the list
+                </p>
+            </div>
+            <div class="header_edit">
+                <p class="header_edit_order">
+                    <form action="{{ action('YoutubeController@getOrderType', $target_channel->id) }}" method = "GET">
+                        <select name="dropdown_order" onchange="submit(this.form)">
+                        @foreach ($order_types as $order_type_key => $order_type_value)
+                            <option value="{{ $order_type_key }}" {{ $order_type_key === $order ? " selected" : '' }}>{{ $order_type_value }}順</option>
+                        @endforeach
+                        </select>
+                    </form>
                 </p>
             </div>
         </div>
@@ -33,12 +44,12 @@
         <div class="hooter">
             <div class="hooter_bar">
             @if (isset($result->prevPageToken))
-                <a href ="{{ route('list',['channel' => $target_channel->id,'page_token' => $result->prevPageToken]) }}"><p class="hooter_pre"> 前へ </p></a>
+                <a href ="{{ route('list',['channel' => $target_channel->id, 'order' => $order,'page_token' => $result->prevPageToken ]) }}"><p class="hooter_pre"> 前へ </p></a>
             @else
                 <p class="hooter_pre"> 前へ </p>
             @endif
             @if (isset($result->nextPageToken))
-                <a href ="{{ route('list',['channel' => $target_channel,'page_token' => $result->nextPageToken]) }}"><p class="hooter_next"> 次へ </p></a>
+                <a href ="{{ route('list',['channel' => $target_channel, 'order' => $order, 'page_token' => $result->nextPageToken]) }}"><p class="hooter_next"> 次へ </p></a>
             @else
                 <p class="hooter_next"> 次へ </p>
             @endif

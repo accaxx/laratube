@@ -14,5 +14,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/','YoutubeController@index');
-Route::post('/youtube/channels','YoutubeController@searchList');
-Route::get('/youtube/{channel}/titles/{page_token?}','YoutubeController@getListByChannelIdAndToken')->name('list');
+Route::get('/youtube','YoutubeController@searchList')->name('search');
+Route::get('/youtube/{channel}/titles/{order}/{page_token?}','YoutubeController@getListByChannelIdAndToken')->name('list');
+// Route::get('/youtube/{channel}/titles','YoutubeController@getOrderType');
+
+Route::get('/youtube/{channel}/titles/order','YoutubeController@getOrderType')->name('listOrderBy');
+// Route::post('/youtube/{channel}/titles/order','YoutubeController@getListByChannelIdOrderBy')->name('listOrderBy');
+
+// Route::get('/youtube/{channel}/titles/{page_token?}/order','YoutubeController@getListByChannelIdOrderBy');
