@@ -31,6 +31,11 @@
                 <input type="submit" name="submit" value="検索"/>
             </form>
         </div>
+        <div class="display_select">
+            <div class="text_area">
+                <div class="text">表示項目を選択してください。</div>
+            </div>
+        </div>
     </div>
 </body>
 </html>

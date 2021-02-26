@@ -35,7 +35,6 @@ class YoutubeController extends Controller
     {        
         $order_type = self::ORDER_TYPE;
         $result = $this->getListFromYoutubeAPI($channel->youtube_channel_id, $order, $page_token);
-        dd($result);
         return view('youtube/show')->with(['target_channel' => $channel, 'result' => $result, 'order_types' => $order_type, 'order' => $order]);
     }
 
