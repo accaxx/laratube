@@ -27,7 +27,6 @@
                     @foreach ($channels as $channel)
                     <option value="{{ $channel->id }}">{{ $channel->name }}</option>
                     @endforeach
-                    <option value="12">12</option>                    
                 </select>
                 <input type="submit" name="submit" value="検索"/>
             </form>
