@@ -40,9 +40,7 @@ class YoutubeController extends Controller
 
     public function getOrderType(Channel $channel, Request $request,string $page_token = '')
     {
-        $result = $this->getListFromYoutubeAPI($channel->youtube_channel_id,'',$request->dropdown_order);
-        return redirect('youtube/'.$request->table_id.'/titles/'.$request->dropdown_order);
-        // return view('youtube/show')->with(['target_channel' => $channel, 'result' => $result, 'order_types' => $order_type, 'prev_order_type' => $prev_order_type]);
+        return redirect('youtube/'.$channel->id.'/titles/'.$request->dropdown_order);
     }
     private function getListFromYoutubeAPI(string $channel_id, string $order_type, string $page_token = '')
     {

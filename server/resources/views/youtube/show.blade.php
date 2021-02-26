@@ -44,7 +44,7 @@
         <div class="hooter">
             <div class="hooter_bar">
             @if (isset($result->prevPageToken))
-                <a href ="{{ route('list',['channel' => $target_channel->id, 'order' => $order,'page_token' => $result->prevPageToken ]) }}"><p class="hooter_pre"> 前へ </p></a>
+                <a href ="{{ route('list',['channel' => $target_channel->id, 'order' => $order,'page_token' => $result->prevPageToken]) }}"><p class="hooter_pre"> 前へ </p></a>
             @else
                 <p class="hooter_pre"> 前へ </p>
             @endif
