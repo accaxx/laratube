@@ -16,4 +16,4 @@ use Illuminate\Support\Facades\Route;
 Route::get('/','YoutubeController@index');
 Route::get('/youtube','YoutubeController@searchList')->name('search');
 Route::get('/youtube/{channel}/titles/order','YoutubeController@getOrderType')->name('listOrderBy');
-Route::get('/youtube/{channel}/titles/{order}/{page_token?}','YoutubeController@getListByChannelIdAndToken')->name('list');
+Route::get('/youtube/{channel}/titles/{page_token?}','YoutubeController@getListByChannelIdAndToken')->name('list');

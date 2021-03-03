@@ -28,6 +28,7 @@
                     <option value="{{ $channel->id }}">{{ $channel->name }}</option>
                     @endforeach
                 </select>
+                <input type="hidden" name="dropdown_order" value="viewCount"/>
                 <input type="submit" name="submit" value="検索"/>
             </form>
         </div>

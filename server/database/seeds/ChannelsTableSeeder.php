@@ -67,12 +67,5 @@ class ChannelsTableSeeder extends Seeder
                 "created_at" => now(),
             ],
         ]);
-<<<<<<< HEAD
-<<<<<<< HEAD
-        //
-=======
->>>>>>> d0fb6c492fe94144f20f3231eb303633ca65cc01
-=======
->>>>>>> 3ee5b5bec97e3b158dd8f599953885ffd21bbb66
     }
 }

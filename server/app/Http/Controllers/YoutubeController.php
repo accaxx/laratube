@@ -27,20 +27,18 @@ class YoutubeController extends Controller
 
     public function searchList(Channel $channel, ChannelRequest $request)
     {
-        $order = self::DEFAULT_ORDER_TYPE;
-        return redirect('youtube/'.$request->table_id.'/titles/'.$order);
+        return redirect()->route('list',['channel' => $request->table_id, 'dropdown_order' => $request->dropdown_order]);
     }
 
-    public function getListByChannelIdAndToken(Channel $channel, string $order = self::DEFAULT_ORDER_TYPE, string $page_token = '')
-    {        
-        $order_type = self::ORDER_TYPE;
-        $result = $this->getListFromYoutubeAPI($channel->youtube_channel_id, $order, $page_token);
-        return view('youtube/show')->with(['target_channel' => $channel, 'result' => $result, 'order_types' => $order_type, 'order' => $order]);
+    public function getListByChannelIdAndToken(Channel $channel, string $page_token = '', Request $request)
+    {
+        $result = $this->getListFromYoutubeAPI($channel->youtube_channel_id, $request->dropdown_order, $page_token);
+        return view('youtube/show')->with(['target_channel' => $channel, 'result' => $result, 'order_types' => self::ORDER_TYPE, 'order' => $request->dropdown_order]);
     }
 
     public function getOrderType(Channel $channel, Request $request,string $page_token = '')
     {
-        return redirect('youtube/'.$channel->id.'/titles/'.$request->dropdown_order);
+        return redirect()->route('list',['channel' => $channel->id, 'dropdown_order' => $request->dropdown_order]);
     }
     private function getListFromYoutubeAPI(string $channel_id, string $order_type, string $page_token = '')
     {
@@ -55,4 +53,3 @@ class YoutubeController extends Controller
         ]);
     }
 }
-

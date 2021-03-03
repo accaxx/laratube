@@ -44,12 +44,12 @@
         <div class="hooter">
             <div class="hooter_bar">
             @if (isset($result->prevPageToken))
-                <a href ="{{ route('list',['channel' => $target_channel->id, 'order' => $order,'page_token' => $result->prevPageToken]) }}"><p class="hooter_pre"> 前へ </p></a>
+                <a href ="{{ route('list',['channel' => $target_channel->id,'page_token' => $result->prevPageToken, 'dropdown_order' => $order]) }}"><p class="hooter_pre"> 前へ </p></a>
             @else
                 <p class="hooter_pre"> 前へ </p>
             @endif
             @if (isset($result->nextPageToken))
-                <a href ="{{ route('list',['channel' => $target_channel, 'order' => $order, 'page_token' => $result->nextPageToken]) }}"><p class="hooter_next"> 次へ </p></a>
+                <a href ="{{ route('list',['channel' => $target_channel, 'page_token' => $result->nextPageToken, 'dropdown_order' => $order]) }}"><p class="hooter_next"> 次へ </p></a>
             @else
                 <p class="hooter_next"> 次へ </p>
             @endif
