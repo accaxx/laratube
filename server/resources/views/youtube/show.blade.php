@@ -20,6 +20,7 @@
             </div>
             <div class="header_edit">
                 <p class="header_edit_order">
+                    <p class="header_edit_order" style="color:red">{{ $errors->first('dropdown_order') }}</p>
                     <form action="{{ action('YoutubeController@getOrderType', $target_channel->id) }}" method = "GET">
                         <select name="dropdown_order" onchange="submit(this.form)">
                         @foreach ($order_types as $order_type_key => $order_type_value)

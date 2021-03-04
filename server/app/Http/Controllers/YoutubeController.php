@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\ChannelRequest;
+use App\Http\Requests\ShowOrderRequest;
 use App\Channel;
 use Google_Client;
 use Google_Service_YouTube;
@@ -30,13 +31,13 @@ class YoutubeController extends Controller
         return redirect()->route('list',['channel' => $request->table_id, 'dropdown_order' => $request->dropdown_order]);
     }
 
-    public function getListByChannelIdAndToken(Channel $channel, string $page_token = '', Request $request)
+    public function getListByChannelIdAndToken(Channel $channel, string $page_token = '', ShowOrderRequest $request)
     {
         $result = $this->getListFromYoutubeAPI($channel->youtube_channel_id, $request->dropdown_order, $page_token);
         return view('youtube/show')->with(['target_channel' => $channel, 'result' => $result, 'order_types' => self::ORDER_TYPE, 'order' => $request->dropdown_order]);
     }
 
-    public function getOrderType(Channel $channel, Request $request,string $page_token = '')
+    public function getOrderType(Channel $channel, ShowOrderRequest $request ,string $page_token = '')
     {
         return redirect()->route('list',['channel' => $channel->id, 'dropdown_order' => $request->dropdown_order]);
     }
