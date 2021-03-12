@@ -1,3 +1,2 @@
 .env
 docker/db/*
-**/.DS_Store
