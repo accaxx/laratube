@@ -38,26 +38,27 @@ class YoutubeController extends Controller
 
     public function searchList(Channel $channel, ChannelRequest $request)
     {
-        $display_value_exist = false;        
-        $display_option = $this->getDisplayOption(self::DISPLAY_OPTION_COLUMN,$request->display_columns);
-        if (isset($request->display_values)){
-            $display_option = array_merge($display_option,$this->getDisplayOption(self::DISPLAY_OPTION_VALUE,$request->display_values));
-            $display_value_exist  = true;
-        } else {
-            $display_option = array_merge($display_option, self::DISPLAY_OPTION_VALUE);
-        };
-        return redirect()->route('list',['channel' => $request->table_id, 'dropdown_order' => $request->dropdown_order])->with(['display_option' => $display_option, 'display_value_exist' => $display_value_exist]);
+        $get_display_option = $this->getDisplayOption($request->display_columns,$request->display_values);
+        return redirect()->route('list',['channel' => $request->table_id, 'dropdown_order' => $request->dropdown_order])->with(['display_option' => $get_display_option['display_option'], 'display_value_exist' => $get_display_option['display_value_exist']]);
     }
 
-    private function getDisplayOption(array $display_option, array $request_keys)
+    private function getDisplayOption(array $request_column_keys, array $request_value_keys = null)
     {
+        $display_value_exist = false;
+        $display_option = array_merge(self::DISPLAY_OPTION_COLUMN, self::DISPLAY_OPTION_VALUE);
+        if (is_null($request_value_keys)){
+            $request_keys = $request_column_keys;
+        } else {
+            $request_keys = array_merge($request_column_keys, $request_value_keys);    
+            $display_value_exist = true;
+        };
         foreach ($request_keys as $request_key){
             $display_option[$request_key]['status'] = 'checked';
         };
-        return $display_option;
+        return ['display_option' => $display_option, 'display_value_exist' => $display_value_exist];
     }
 
-    private function changeFormat(object $result)
+    private function convertDisplayFormat(object $result)
     {
         foreach ($result->items as $item){
             $item->snippet->publishedAt = date('Y/m/d H:i',strtotime($item->snippet->publishedAt));
@@ -76,7 +77,7 @@ class YoutubeController extends Controller
             return $element['status'] == 'checked';
         });
         $result = $this->getListFromYoutubeAPI($channel->youtube_channel_id, $request->dropdown_order, $page_token, $request->session()->get('display_value_exist'));
-        $result = $this->changeFormat($result);
+        $result = $this->convertDisplayFormat($result);
         return view('youtube/show')->with([
              'target_channel'         => $channel, 
              'result'                 => $result, 
@@ -89,16 +90,10 @@ class YoutubeController extends Controller
 
     public function getShowRequest(Channel $channel, ShowOrderRequest $request, string $page_token = '')
     {
-        $display_value_exist = false;        
-        $display_option = $this->getDisplayOption(self::DISPLAY_OPTION_COLUMN,$request->display_columns);
-        if (isset($request->display_values)){
-            $display_option = array_merge($display_option,$this->getDisplayOption(self::DISPLAY_OPTION_VALUE,$request->display_values));
-            $display_value_exist  = true;
-        } else {
-            $display_option = array_merge($display_option, self::DISPLAY_OPTION_VALUE);
-        };
-        return redirect()->route('list',['channel' => $channel->id, 'page_token' => $request->page_token, 'dropdown_order' => $request->dropdown_order])->with(['display_option' => $display_option, 'display_value_exist' => $display_value_exist]);
+        $get_display_option = $this->getDisplayOption($request->display_columns,$request->display_values);
+        return redirect()->route('list',['channel' => $channel->id, 'page_token' => $request->page_token, 'dropdown_order' => $request->dropdown_order])->with(['display_option' => $get_display_option['display_option'], 'display_value_exist' => $get_display_option['display_value_exist']]);
     }
+
     private function getListFromYoutubeAPI(string $channel_id, string $order_type, string $page_token = '',$display_value_exist)
     {
         $client = new Google_Client();
@@ -109,21 +104,24 @@ class YoutubeController extends Controller
             'order'         => $order_type,
             'maxResults'    => self::MAX_SNIPPETS_COUNT,
             'pageToken'     => $page_token,
+            'type'          => 'video',
         ]);
         if ($display_value_exist){
-            $channel_search_items = $channel_search_snippets->items;
-            foreach ($channel_search_items as $channel_search_item){
-                if (! isset($channel_search_item->id->videoId)){
-                    exit( 'APIデータに不具合が生じています。');
-                }
-                $video_detail_result = $youtube->videos->listVideos('statistics', [
-                    'id'     => $channel_search_item->id->videoId,
-                ]);
-                // ****** $video_detail_result->items　は常に要素1の配列のため、[0]で指定（他の方法あり？) ******
-                $channel_search_item->statistics = $video_detail_result->items[0]->statistics;
-            };
-            $channel_search_snippets->items = $channel_search_items;
+            $channel_search_snippets = $this->getVideoDetailFromYoutubeAPI($youtube,$channel_search_snippets);
         }
+        return $channel_search_snippets;
+    }
+
+    private function getVideoDetailFromYoutubeAPI($youtube,$channel_search_snippets){
+        $channel_search_items = $channel_search_snippets->items;
+        foreach ($channel_search_items as $channel_search_item){
+            $video_detail_result = $youtube->videos->listVideos('statistics', [
+                'id'     => $channel_search_item->id->videoId,
+            ]);
+            // ****** $video_detail_result->items　は常に要素1の配列のため、[0]で指定（他の方法あり？) ******
+            $channel_search_item->statistics = $video_detail_result->items[0]->statistics;
+        };
+        $channel_search_snippets->items = $channel_search_items;
         return $channel_search_snippets;
     }
 }
