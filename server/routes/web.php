@@ -15,5 +15,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/','YoutubeController@index');
 Route::get('/youtube','YoutubeController@searchList')->name('search');
+Route::get('/youtube/export','YoutubeController@csvExport')->name('csvExport');
 Route::get('/youtube/{channel}/titles/show','YoutubeController@getShowRequest');
 Route::get('/youtube/{channel}/titles/{page_token?}','YoutubeController@getListByChannelIdAndToken')->name('list');
