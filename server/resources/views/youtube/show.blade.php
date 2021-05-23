@@ -19,44 +19,94 @@
                 </p>
             </div>
             <div class="header_edit">
-                <p class="header_edit_order">
-                    <p class="header_edit_order" style="color:red">{{ $errors->first('dropdown_order') }}</p>
-                    <form action="{{ action('YoutubeController@getOrderType', $target_channel->id) }}" method = "GET">
-                        <select name="dropdown_order" onchange="submit(this.form)">
-                        @foreach ($order_types as $order_type_key => $order_type_value)
-                            <option value="{{ $order_type_key }}" {{ $order_type_key === $order ? " selected" : '' }}>{{ $order_type_value }}順</option>
-                        @endforeach
-                        </select>
+                @foreach ($errors->all() as $error)
+                <div class="error">{{ $error }}</div>
+                @endforeach
+                <div class="header_edit_order">
+                    <input type="button" id="btn_display" class="button display-inlineblock" name="btn_display" value="表示項目を編集" onclick="return displayChange();"/>
+                    <form action="{{ action('YoutubeController@getShowRequest', $target_channel->id) }}" name="form_order" class="display-inlineblock text" method = "GET">
+                        @include('youtube.components.show_request',[
+                            'form_name'              => 'form_order',
+                            'order_types'            => $order_types,
+                            'order'                  => $order,
+                            'display_option'         => $display_option,
+                            'checked_display_option' => $checked_display_option,
+                            'prevPageToken'          => $result->prevPageToken,
+                            'nextPageToken'          => $result->nextPageToken, 
+                            ])
                     </form>
+                </div>
+                <p class="display_select display">
+                    <div class="text display">表示項目を選択してください。</div>
+                    <div class="text_area display">
+                        <form action="{{ action('YoutubeController@getShowRequest', $target_channel->id) }}" name="form_display" method = "GET">
+                            @include('youtube.components.show_request',[
+                                'form_name'              => 'form_display',
+                                'order_types'            => $order_types,
+                                'order'                  => $order,
+                                'display_option'         => $display_option,
+                                'checked_display_option' => $checked_display_option,
+                                'prevPageToken'          => $result->prevPageToken,
+                                'nextPageToken'          => $result->nextPageToken, 
+                                ])                            
+                            <div class="margin-right-auto">
+                                <input type="button" name="btn_display_execute" class="display button margin-tb-10 margin-right-auto" value="編集を実行" onclick="submit(this.form)"/>
+                            </div>
+                        </form>
+                    </div>
                 </p>
             </div>
         </div>
         <div class="content">
             <div class="content__body">
                 @foreach ($result->items as $item)
-                    <div class="content__body__videos">
-                        <p>
-                            {{ $item->snippet->title }}
-                        </p>
-                    </div>
+                    <p class="content__body__videos  border-top-dashed">
+                        @foreach ($checked_display_option as $checked_display_option_key => $checked_display_option_value)
+                        <div class="text"><{{ $checked_display_option_value['value_jap'] }}></div>
+                        <div class="content_text">{{ $item->{$checked_display_option_value['extract_method']}->$checked_display_option_key }}</div>
+                        @endforeach
+                    </p>
                 @endforeach
             </div>
         </div>
-        <div class="hooter">
+        <div class="hooter border-top-dashed">
             <div class="hooter_bar">
-            @if (isset($result->prevPageToken))
-                <a href ="{{ route('list',['channel' => $target_channel->id,'page_token' => $result->prevPageToken, 'dropdown_order' => $order]) }}"><p class="hooter_pre"> 前へ </p></a>
-            @else
-                <p class="hooter_pre"> 前へ </p>
-            @endif
-            @if (isset($result->nextPageToken))
-                <a href ="{{ route('list',['channel' => $target_channel, 'page_token' => $result->nextPageToken, 'dropdown_order' => $order]) }}"><p class="hooter_next"> 次へ </p></a>
-            @else
-                <p class="hooter_next"> 次へ </p>
-            @endif
+                @if (isset($result->prevPageToken))
+                <form action="{{ action('YoutubeController@getShowRequest', $target_channel->id) }}" method = "GET" name="form_peginate_prev" class="hooter_text display-inlineblock">
+                    @include('youtube.components.show_request',[
+                        'form_name'              => 'form_peginate_prev',
+                        'order_types'            => $order_types,
+                        'order'                  => $order,
+                        'display_option'         => $display_option,
+                        'checked_display_option' => $checked_display_option,
+                        'prevPageToken'          => $result->prevPageToken,
+                        'nextPageToken'          => $result->nextPageToken, 
+                        ])
+                    <a href ="javascript:form_peginate_prev.submit()"><div class="hooter_text display-inlineblock"> 前へ </div></a>
+                </form>
+                @else
+                    <div class="hooter_text display-inlineblock"> 前へ </div>
+                @endif            
+                @if (isset($result->nextPageToken))
+                <form action="{{ action('YoutubeController@getShowRequest', $target_channel->id) }}" method = "GET" name="form_peginate_next" class="hooter_text display-inlineblock">
+                    @include('youtube.components.show_request',[
+                        'form_name'              => 'form_peginate_next',
+                        'order_types'            => $order_types,
+                        'order'                  => $order,
+                        'display_option'         => $display_option,
+                        'checked_display_option' => $checked_display_option,
+                        'prevPageToken'          => $result->prevPageToken,
+                        'nextPageToken'          => $result->nextPageToken, 
+                        ])
+                    <a href ="javascript:form_peginate_next.submit()"><div class="hooter_text display-inlineblock"> 次へ </div></a>
+                </form>
+                @else
+                    <div class="hooter_text display-inlineblock"> 次へ </div>
+                @endif
             </div>
-            <a href ="/"><p class="back">選択画面に戻る</p></a>
+            <a href ="/"><div class="hooter_text">選択画面に戻る</div></a>
         </div>
     </div>
+    <script src={{ asset('js/app.js') }}></script>
 </body>
 </html>
